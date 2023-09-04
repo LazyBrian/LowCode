@@ -1,0 +1,27 @@
+@model List<dynamic>
+<table class="table">
+    <tbody>
+        <thead>
+            <tr>
+                <th>
+                    @Model[0].BookId
+                </th>
+                <th>
+                    @Model[0].BookName
+                </th>
+            </tr>
+        </thead>
+        @foreach (var row in Model)
+        {
+            <tr>
+                <td>
+                    @row.BookId
+                </td>
+                <td>
+                    @row.BookName
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
