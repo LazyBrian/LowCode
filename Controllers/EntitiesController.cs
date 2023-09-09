@@ -57,8 +57,8 @@ namespace LowCode.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EntityId,LogicalName,DisplayName,Description")] Entity entity)
         {
-            if (ModelState.IsValid)
-            {
+            // if (ModelState.IsValid)
+            // {
                 if (!_context.Entities.Any(c => c.LogicalName == entity.LogicalName))
                 {
                     _context.Add(entity);
@@ -66,7 +66,7 @@ namespace LowCode.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-            }
+            // }
             return View(entity);
         }
 

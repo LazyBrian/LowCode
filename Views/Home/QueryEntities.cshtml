@@ -1,25 +1,26 @@
-@model List<dynamic>
+@model List<IDictionary<string, object>>
 <table class="table">
     <tbody>
         <thead>
             <tr>
-                <th>
-                    @Model[0].BookId
-                </th>
-                <th>
-                    @Model[0].BookName
-                </th>
+                @foreach (var item in Model[0])
+                {
+                    <th>
+                        @item.Key
+                    </th>
+                }
             </tr>
+
         </thead>
         @foreach (var row in Model)
         {
             <tr>
-                <td>
-                    @row.BookId
-                </td>
-                <td>
-                    @row.BookName
-                </td>
+                @foreach (var item in row)
+                {
+                    <td>
+                        @item.Value
+                    </td>
+                }
             </tr>
         }
 

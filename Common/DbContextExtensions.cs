@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 public static class DbContextExtensions
 {
-    public static IEnumerable<dynamic> CollectionSql(this DbContext dbContext, string sql, Dictionary<string, object> paramters)
+    public static IEnumerable<IDictionary<string, object>> CollectionSql(this DbContext dbContext, string sql, Dictionary<string, object> paramters)
     {
         using (var command = dbContext.Database.GetDbConnection().CreateCommand())
         {
@@ -23,7 +23,7 @@ public static class DbContextExtensions
                 command.Parameters.Add(dbParameter);
             }
 
-            var obj = new List<dynamic>();
+            var obj = new List<IDictionary<string, object>>();
             using (DbDataReader dataReader = command.ExecuteReader())
             {
 

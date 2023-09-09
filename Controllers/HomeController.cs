@@ -35,14 +35,14 @@ public class HomeController : Controller
             Console.WriteLine(sql);
             var dic = new Dictionary<string, object>();
 
-            IList<dynamic> list = _dbContext.CollectionSql(sql, dic).ToList();
+            // IList<dynamic> list = _dbContext.CollectionSql(sql, dic).ToList();
 
-            foreach (var item in list)
-            {
-                Console.WriteLine(item.BookId);
+            // foreach (var item in list)
+            // {
+            //     Console.WriteLine(item.BookId);
 
-                Console.WriteLine(item.BookName);
-            }
+            //     Console.WriteLine(item.BookName);
+            // }
         }
 
 
@@ -65,7 +65,7 @@ public class HomeController : Controller
     {
 
         Entity entity = _dbContext.Entities.Include(c => c.Attributes)
-                    .FirstOrDefault(c => c.LogicalName == "Books");
+                    .FirstOrDefault(c => c.LogicalName == logicalName);
 
         if (entity != null)
         {
@@ -79,7 +79,7 @@ public class HomeController : Controller
             Console.WriteLine(sql);
             var dic = new Dictionary<string, object>();
 
-            IList<dynamic> list = _dbContext.CollectionSql(sql, dic).ToList();
+            List<IDictionary<string, object>> list = _dbContext.CollectionSql(sql, dic).ToList();
 
             return View(list);
         }
