@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LowCode.Models;
-using Attribute = LowCode.Models.Attribute;
 
 namespace LowCode.Controllers
 {
@@ -22,32 +21,34 @@ namespace LowCode.Controllers
         // GET: Attributes
         public async Task<IActionResult> Index()
         {
-            var lowCodeDbContext = _context.Attributes.Include(a => a.Entity);
+            var lowCodeDbContext = _context.Attributes.Include(i => i.AttributeType).Include(i => i.Entity);
             return View(await lowCodeDbContext.ToListAsync());
         }
 
         // GET: Attributes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.Attributes == null)
             {
                 return NotFound();
             }
 
-            var attribute = await _context.Attributes
-                .Include(a => a.Entity)
+            var internalAttribute = await _context.Attributes
+                .Include(i => i.AttributeType)
+                .Include(i => i.Entity)
                 .FirstOrDefaultAsync(m => m.AttributeId == id);
-            if (attribute == null)
+            if (internalAttribute == null)
             {
                 return NotFound();
             }
 
-            return View(attribute);
+            return View(internalAttribute);
         }
 
         // GET: Attributes/Create
         public IActionResult Create()
         {
+            ViewData["AttributeTypeId"] = new SelectList(_context.AttributeTypes, "AttributeTypeId", "Name");
             ViewData["EntityId"] = new SelectList(_context.Entities, "EntityId", "DisplayName");
             return View();
         }
@@ -57,40 +58,40 @@ namespace LowCode.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AttributeId,LogicalName,DisplayName,Description,EntityId")] Attribute attribute)
+        public async Task<IActionResult> Create([Bind("AttributeId,LogicalName,DisplayName,AttributeMask,DefaultValue,IsCustomField,IsPKAttribute,MaxLength,MinValue,MaxValue,IsActive,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn,EntityId,AttributeTypeId")] InternalAttribute internalAttribute)
         {
-            
             //if (ModelState.IsValid)
             //{
-                Entity entity = _context.Entities.Find(attribute.EntityId);
-                
-                if (!_context.Attributes.Any(c => c.LogicalName == entity.LogicalName && c.LogicalName == attribute.LogicalName))
+                _context.Add(internalAttribute);
+                var entity = _context.Entities.Find(internalAttribute.EntityId);
+                if (entity != null)
                 {
-                    _context.Add(attribute);
-                    DatabaseHelper.AddAttribute(entity.LogicalName, attribute);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    DatabaseHelper.AddAttribute(entity.LogicalName, internalAttribute);
                 }
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             //}
-            ViewData["EntityId"] = new SelectList(_context.Entities, "EntityId", "DisplayName", attribute.EntityId);
-            return View(attribute);
+            ViewData["AttributeTypeId"] = new SelectList(_context.AttributeTypes, "AttributeTypeId", "Name", internalAttribute.AttributeTypeId);
+            ViewData["EntityId"] = new SelectList(_context.Entities, "EntityId", "DisplayName", internalAttribute.EntityId);
+            return View(internalAttribute);
         }
 
         // GET: Attributes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null || _context.Attributes == null)
             {
                 return NotFound();
             }
 
-            var attribute = await _context.Attributes.FindAsync(id);
-            if (attribute == null)
+            var internalAttribute = await _context.Attributes.FindAsync(id);
+            if (internalAttribute == null)
             {
                 return NotFound();
             }
-            ViewData["EntityId"] = new SelectList(_context.Entities, "EntityId", "DisplayName", attribute.EntityId);
-            return View(attribute);
+            ViewData["AttributeTypeId"] = new SelectList(_context.AttributeTypes, "AttributeTypeId", "Name", internalAttribute.AttributeTypeId);
+            ViewData["EntityId"] = new SelectList(_context.Entities, "EntityId", "DisplayName", internalAttribute.EntityId);
+            return View(internalAttribute);
         }
 
         // POST: Attributes/Edit/5
@@ -98,9 +99,9 @@ namespace LowCode.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AttributeId,LogicalName,DisplayName,Description,EntityId")] Attribute attribute)
+        public async Task<IActionResult> Edit(Guid? id, [Bind("AttributeId,LogicalName,DisplayName,AttributeMask,DefaultValue,IsCustomField,IsPKAttribute,MaxLength,MinValue,MaxValue,IsActive,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn,EntityId,AttributeTypeId")] InternalAttribute internalAttribute)
         {
-            if (id != attribute.AttributeId)
+            if (id != internalAttribute.AttributeId)
             {
                 return NotFound();
             }
@@ -109,12 +110,12 @@ namespace LowCode.Controllers
             {
                 try
                 {
-                    _context.Update(attribute);
+                    _context.Update(internalAttribute);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AttributeExists(attribute.AttributeId))
+                    if (!InternalAttributeExists(internalAttribute.AttributeId))
                     {
                         return NotFound();
                     }
@@ -125,51 +126,53 @@ namespace LowCode.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EntityId"] = new SelectList(_context.Entities, "EntityId", "DisplayName", attribute.EntityId);
-            return View(attribute);
+            ViewData["AttributeTypeId"] = new SelectList(_context.AttributeTypes, "AttributeTypeId", "Name", internalAttribute.AttributeTypeId);
+            ViewData["EntityId"] = new SelectList(_context.Entities, "EntityId", "DisplayName", internalAttribute.EntityId);
+            return View(internalAttribute);
         }
 
         // GET: Attributes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null || _context.Attributes == null)
             {
                 return NotFound();
             }
 
-            var attribute = await _context.Attributes
-                .Include(a => a.Entity)
+            var internalAttribute = await _context.Attributes
+                .Include(i => i.AttributeType)
+                .Include(i => i.Entity)
                 .FirstOrDefaultAsync(m => m.AttributeId == id);
-            if (attribute == null)
+            if (internalAttribute == null)
             {
                 return NotFound();
             }
 
-            return View(attribute);
+            return View(internalAttribute);
         }
 
         // POST: Attributes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid? id)
         {
             if (_context.Attributes == null)
             {
                 return Problem("Entity set 'LowCodeDbContext.Attributes'  is null.");
             }
-            var attribute = await _context.Attributes.FindAsync(id);
-            if (attribute != null)
+            var internalAttribute = await _context.Attributes.FindAsync(id);
+            if (internalAttribute != null)
             {
-                _context.Attributes.Remove(attribute);
+                _context.Attributes.Remove(internalAttribute);
             }
-
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AttributeExists(int id)
+        private bool InternalAttributeExists(Guid? id)
         {
-            return (_context.Attributes?.Any(e => e.AttributeId == id)).GetValueOrDefault();
+          return (_context.Attributes?.Any(e => e.AttributeId == id)).GetValueOrDefault();
         }
     }
 }

@@ -5,14 +5,13 @@ using LowCode.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
-using Attribute = LowCode.Models.Attribute;
 using Index = Microsoft.SqlServer.Management.Smo.Index;
 
 public class DatabaseHelper
 {
     private static readonly string DATABASE_NAME = "LowCodeDb";
 
-    private static Server Server = new Server("(localdb)\\MSSQLLocalDB");
+    private static Server Server = new Server("Lzzy");
     public static Server Instance
     {
         get
@@ -24,7 +23,7 @@ public class DatabaseHelper
     public static Database database = Instance.Databases[DATABASE_NAME];
 
 
-    public static void CreateTable(Entity entity)
+    public static void CreateTable(InternalEntity entity)
     {
         //Database db = Server.Databases["LowCodeDb"];
 
@@ -61,15 +60,26 @@ public class DatabaseHelper
         pk.Create();
     }
 
-    public static void AddAttribute(string logicalName, Attribute attribute)
+    public static void AddAttribute(string logicalName, InternalAttribute attribute)
     {
         Table currentEntity = database.Tables[logicalName];
 
-        Column column = new Column(currentEntity, attribute.LogicalName, DataType.NVarCharMax);
+        Column column = new Column(currentEntity, attribute.LogicalName, DataType.NVarChar(attribute.MaxLength.Value));
         column.Nullable = true;
+        //column.Default = attribute.DefaultValue;
         
         currentEntity.Columns.Add(column);
 
         currentEntity.Alter();
+    }
+
+    public static void AddRelationship(string logicalName)
+    {
+        // Table currentEntity = database.Tables[logicalName];
+
+        // ForeignKey foreignKey=new ForeignKey(currentEntity,"Test");
+        // new ForeignKeyColumn(foreignKey,"","")
+        // ForeignKeyAction
+
     }
 }

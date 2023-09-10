@@ -21,27 +21,27 @@ namespace LowCode.Controllers
         // GET: Entities
         public async Task<IActionResult> Index()
         {
-            return _context.Entities != null ?
-                        View(await _context.Entities.ToListAsync()) :
-                        Problem("Entity set 'LowCodeDbContext.Entities'  is null.");
+              return _context.Entities != null ? 
+                          View(await _context.Entities.ToListAsync()) :
+                          Problem("Entity set 'LowCodeDbContext.Entities'  is null.");
         }
 
         // GET: Entities/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.Entities == null)
             {
                 return NotFound();
             }
 
-            var entity = await _context.Entities
+            var internalEntity = await _context.Entities
                 .FirstOrDefaultAsync(m => m.EntityId == id);
-            if (entity == null)
+            if (internalEntity == null)
             {
                 return NotFound();
             }
 
-            return View(entity);
+            return View(internalEntity);
         }
 
         // GET: Entities/Create
@@ -55,35 +55,32 @@ namespace LowCode.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EntityId,LogicalName,DisplayName,Description")] Entity entity)
+        public async Task<IActionResult> Create([Bind("EntityId,LogicalName,DisplayName,IsCustomEntity,EntityMask,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] InternalEntity internalEntity)
         {
-            // if (ModelState.IsValid)
-            // {
-                if (!_context.Entities.Any(c => c.LogicalName == entity.LogicalName))
-                {
-                    _context.Add(entity);
-                    DatabaseHelper.CreateTable(entity);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-            // }
-            return View(entity);
+            if (ModelState.IsValid)
+            {
+                _context.Add(internalEntity);
+                DatabaseHelper.CreateTable(internalEntity);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(internalEntity);
         }
 
         // GET: Entities/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null || _context.Entities == null)
             {
                 return NotFound();
             }
 
-            var entity = await _context.Entities.FindAsync(id);
-            if (entity == null)
+            var internalEntity = await _context.Entities.FindAsync(id);
+            if (internalEntity == null)
             {
                 return NotFound();
             }
-            return View(entity);
+            return View(internalEntity);
         }
 
         // POST: Entities/Edit/5
@@ -91,9 +88,9 @@ namespace LowCode.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EntityId,LogicalName,DisplayName,Description")] Entity entity)
+        public async Task<IActionResult> Edit(Guid? id, [Bind("EntityId,LogicalName,DisplayName,IsCustomEntity,EntityMask,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] InternalEntity internalEntity)
         {
-            if (id != entity.EntityId)
+            if (id != internalEntity.EntityId)
             {
                 return NotFound();
             }
@@ -102,12 +99,12 @@ namespace LowCode.Controllers
             {
                 try
                 {
-                    _context.Update(entity);
+                    _context.Update(internalEntity);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EntityExists(entity.EntityId))
+                    if (!InternalEntityExists(internalEntity.EntityId))
                     {
                         return NotFound();
                     }
@@ -118,49 +115,49 @@ namespace LowCode.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(entity);
+            return View(internalEntity);
         }
 
         // GET: Entities/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null || _context.Entities == null)
             {
                 return NotFound();
             }
 
-            var entity = await _context.Entities
+            var internalEntity = await _context.Entities
                 .FirstOrDefaultAsync(m => m.EntityId == id);
-            if (entity == null)
+            if (internalEntity == null)
             {
                 return NotFound();
             }
 
-            return View(entity);
+            return View(internalEntity);
         }
 
         // POST: Entities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid? id)
         {
             if (_context.Entities == null)
             {
                 return Problem("Entity set 'LowCodeDbContext.Entities'  is null.");
             }
-            var entity = await _context.Entities.FindAsync(id);
-            if (entity != null)
+            var internalEntity = await _context.Entities.FindAsync(id);
+            if (internalEntity != null)
             {
-                _context.Entities.Remove(entity);
+                _context.Entities.Remove(internalEntity);
             }
-
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EntityExists(int id)
+        private bool InternalEntityExists(Guid? id)
         {
-            return (_context.Entities?.Any(e => e.EntityId == id)).GetValueOrDefault();
+          return (_context.Entities?.Any(e => e.EntityId == id)).GetValueOrDefault();
         }
     }
 }

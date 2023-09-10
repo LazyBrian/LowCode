@@ -1,37 +1,31 @@
-﻿@model LowCode.Models.InternalEntity
+﻿@model LowCode.Models.InternalAttributeType
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Edit</h1>
+<h1>Create</h1>
 
-<h4>InternalEntity</h4>
+<h4>InternalAttributeType</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EntityId" />
             <div class="form-group">
-                <label asp-for="LogicalName" class="control-label"></label>
-                <input asp-for="LogicalName" class="form-control" />
-                <span asp-validation-for="LogicalName" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DisplayName" class="control-label"></label>
-                <input asp-for="DisplayName" class="form-control" />
-                <span asp-validation-for="DisplayName" class="text-danger"></span>
+                <label asp-for="SqlType" class="control-label"></label>
+                <select asp-for="SqlType" asp-items="ViewBag.SqlType" class="form-control"></select>
+                <span asp-validation-for="SqlType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IsCustomEntity" class="control-label"></label>
-                <input asp-for="IsCustomEntity" class="form-control" />
-                <span asp-validation-for="IsCustomEntity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EntityMask" class="control-label"></label>
-                <input asp-for="EntityMask" class="form-control" />
-                <span asp-validation-for="EntityMask" class="text-danger"></span>
+                <label asp-for="CustomType" class="control-label"></label>
+                <input asp-for="CustomType" class="form-control" />
+                <span asp-validation-for="CustomType" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreatedBy" class="control-label"></label>
@@ -49,7 +43,12 @@
                 <span asp-validation-for="ModifiedBy" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label asp-for="ModifiedOn" class="control-label"></label>
+                <input asp-for="ModifiedOn" class="form-control" />
+                <span asp-validation-for="ModifiedOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>

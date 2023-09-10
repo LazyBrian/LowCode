@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using LowCode.Models;
 using Microsoft.EntityFrameworkCore;
-using Attribute = LowCode.Models.Attribute;
 
 namespace LowCode.Controllers;
 
@@ -20,7 +19,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        Entity entity = _dbContext.Entities.Include(c => c.Attributes)
+        InternalEntity entity = _dbContext.Entities.Include(c => c.Attributes)
             .FirstOrDefault(c => c.LogicalName == "Books");
 
         if (entity != null)
@@ -64,7 +63,7 @@ public class HomeController : Controller
     public IActionResult QueryEntities(string logicalName)
     {
 
-        Entity entity = _dbContext.Entities.Include(c => c.Attributes)
+        InternalEntity entity = _dbContext.Entities.Include(c => c.Attributes)
                     .FirstOrDefault(c => c.LogicalName == logicalName);
 
         if (entity != null)
@@ -93,7 +92,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddEntity([Bind("LogicalName,DisplayName,Description")] Entity entity)
+    public IActionResult AddEntity([Bind("LogicalName,DisplayName,Description")] InternalEntity entity)
     {
         if (ModelState.IsValid)
         {
@@ -121,10 +120,10 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddAttribute([Bind("LogicalName,DisplayName,Description")] Attribute attribute)
+    public IActionResult AddAttribute([Bind("LogicalName,DisplayName,Description")] InternalAttribute attribute)
     {
         string entityLogicalName = "test";
-        attribute.EntityId = 5;
+        attribute.EntityId = Guid.NewGuid();
         // if (ModelState.IsValid)
         // {
             if (!_dbContext.Attributes.Any(c => c.LogicalName == entityLogicalName && c.LogicalName == attribute.LogicalName))

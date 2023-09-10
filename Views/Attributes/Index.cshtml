@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LowCode.Models.Attribute>
+﻿@model IEnumerable<LowCode.Models.InternalAttribute>
 
 @{
     ViewData["Title"] = "Index";
@@ -18,8 +18,44 @@
             <th>
                 @Html.DisplayNameFor(model => model.DisplayName)
             </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.AttributeMask)
+            </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.DefaultValue)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.IsCustomField)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPKAttribute)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxLength)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+           @*  <th>
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModifiedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModifiedOn)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.AttributeType)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Entity)
@@ -36,8 +72,44 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DisplayName)
             </td>
+            @* <td>
+                @Html.DisplayFor(modelItem => item.AttributeMask)
+            </td> *@
+            @* <td>
+                @Html.DisplayFor(modelItem => item.DefaultValue)
+            </td> *@
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.IsCustomField)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPKAttribute)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxLength)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MinValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            @* <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModifiedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModifiedOn)
+            </td> *@
+            <td>
+                @Html.DisplayFor(modelItem => item.AttributeType.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Entity.DisplayName)

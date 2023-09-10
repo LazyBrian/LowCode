@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LowCode.Models.InternalEntity>
+﻿@model IEnumerable<LowCode.Models.InternalAttributeType>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,16 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.LogicalName)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DisplayName)
+                @Html.DisplayNameFor(model => model.SqlType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsCustomEntity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EntityMask)
+                @Html.DisplayNameFor(model => model.CustomType)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreatedBy)
@@ -43,16 +40,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.LogicalName)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DisplayName)
+                @Html.DisplayFor(modelItem => item.SqlType)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsCustomEntity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EntityMask)
+                @Html.DisplayFor(modelItem => item.CustomType)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedBy)
@@ -67,9 +61,9 @@
                 @Html.DisplayFor(modelItem => item.ModifiedOn)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.EntityId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EntityId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EntityId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.AttributeTypeId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AttributeTypeId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AttributeTypeId">Delete</a>
             </td>
         </tr>
 }
